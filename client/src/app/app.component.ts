@@ -10,6 +10,7 @@ import { QueryFormComponent } from './components/query-form/query-form.component
 import { SchemaLookupComponent } from './components/schema-lookup/schema-lookup.component';
 import { TradeLookupComponent } from './components/trade-lookup/trade-lookup.component';
 import { OrderSearchComponent } from './components/order-search/order-search.component';
+import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { ApiService } from './services/api.service';
 
 @Component({
@@ -21,7 +22,8 @@ import { ApiService } from './services/api.service';
     QueryFormComponent,
     SchemaLookupComponent,
     TradeLookupComponent,
-    OrderSearchComponent
+    OrderSearchComponent,
+    ChatWindowComponent
   ],
   template: `
     <div class="app-container">
@@ -50,6 +52,7 @@ import { ApiService } from './services/api.service';
           </nav>
 
           <div class="tab-content">
+            <app-chat-window *ngIf="activeTab === 'Chat'"></app-chat-window>
             <app-query-form *ngIf="activeTab === 'Query'"></app-query-form>
             <app-schema-lookup *ngIf="activeTab === 'Schema'"></app-schema-lookup>
             <app-trade-lookup *ngIf="activeTab === 'Trade'"></app-trade-lookup>
@@ -210,8 +213,8 @@ import { ApiService } from './services/api.service';
   providers: [ApiService]
 })
 export class AppComponent implements OnInit {
-  activeTab: string = 'Query';
-  tabs: string[] = ['Query', 'Schema', 'Trade', 'Orders'];
+  activeTab: string = 'Chat';
+  tabs: string[] = ['Chat', 'Query', 'Schema', 'Trade', 'Orders'];
   isConnected: boolean = false;
 
   constructor(private apiService: ApiService) {}
