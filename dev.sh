@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Development script to run all services for local development
+# On Windows, run each command in a separate PowerShell terminal
+
+echo "Oracle Database MCP Agent - Development Setup"
+echo "=============================================="
+echo ""
+echo "This script provides commands for running the full stack application"
+echo ""
+echo "Option 1: Run all services in separate terminals (RECOMMENDED)"
+echo "-----------------------------------------------------------"
+echo "Terminal 1 - MCP Server:"
+echo "cd server && npm run dev"
+echo ""
+echo "Terminal 2 - Express API:"
+echo "cd api && npm run dev"
+echo ""
+echo "Terminal 3 - Angular Client:"
+echo "cd client && npm start"
+echo ""
+echo "Option 2: Build all components"
+echo "------------------------------"
+echo "cd server && npm run build"
+echo "cd ../api && npm run build"
+echo "cd ../client && npm run build"
+echo ""
+echo "Option 3: Production run (after building)"
+echo "-----------------------------------------"
+echo "Terminal 1 - MCP Server:"
+echo "cd server && npm start"
+echo ""
+echo "Terminal 2 - Express API:"
+echo "cd api && npm start"
+echo ""
+
+echo "Browser: Open http://localhost:4200"
