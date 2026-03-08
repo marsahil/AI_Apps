@@ -100,6 +100,20 @@ class MCPServerClient {
       });
 
       logger.debug(`MCP tool ${toolName} returned successfully`);
+      
+      // Extract and parse the text content from MCP response
+      if (result && result.content && Array.isArray(result.content) && result.content.length > 0) {
+        const textContent = result.content.find((c: any) => c.type === 'text');
+        if (textContent && textContent.text) {
+          try {
+            return JSON.parse(textContent.text);
+          } catch (parseError) {
+            logger.warn(`Failed to parse MCP response as JSON for tool ${toolName}`, parseError);
+            return textContent.text;
+          }
+        }
+      }
+      
       return result;
     } catch (error) {
       logger.error(`Failed to call MCP tool ${toolName}`, error);

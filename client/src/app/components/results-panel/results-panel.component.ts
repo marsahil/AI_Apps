@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="results-panel">
       <div class="results-header">
-        <h3>Results ({{ result?.data?.rowCount || 0 }} rows)</h3>
+        <h3>Results ({{ result?.rowCount || 0 }} rows)</h3>
         <button class="btn-copy" (click)="copyToClipboard()" title="Copy results">
           📋 Copy
         </button>
@@ -24,12 +24,12 @@ import { CommonModule } from '@angular/common';
         <table class="results-table">
           <thead>
             <tr>
-              <th *ngFor="let column of result.data.columns">{{ column }}</th>
+              <th *ngFor="let column of result.columns">{{ column }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of result.data.rows">
-              <td *ngFor="let column of result.data.columns">
+            <tr *ngFor="let row of result.rows">
+              <td *ngFor="let column of result.columns">
                 {{ formatCellValue(row[column]) }}
               </td>
             </tr>
@@ -137,11 +137,11 @@ export class ResultsPanelComponent {
   @Input() result: any;
 
   isTableData(): boolean {
-    return this.result?.data?.columns && 
-           this.result?.data?.rows && 
-           Array.isArray(this.result.data.columns) &&
-           Array.isArray(this.result.data.rows) &&
-           this.result.data.rows.length > 0;
+    return this.result?.columns && 
+           this.result?.rows && 
+           Array.isArray(this.result.columns) &&
+           Array.isArray(this.result.rows) &&
+           this.result.rows.length > 0;
   }
 
   formatCellValue(value: any): string {
@@ -155,11 +155,29 @@ export class ResultsPanelComponent {
   }
 
   formatResults(): string {
+    // If it's table data that couldn't be displayed as table, format as JSON
+    if (this.result?.columns && this.result?.rows) {
+      return JSON.stringify(this.result, null, 2);
+    }
+    // Otherwise format the entire result
     return JSON.stringify(this.result, null, 2);
   }
 
   copyToClipboard(): void {
-    navigator.clipboard.writeText(this.formatResults()).then(() => {
+    let contentToCopy = '';
+    
+    // If it's table data, copy as formatted table text
+    if (this.isTableData()) {
+      const headers = this.result.columns.join('\t');
+      const rows = this.result.rows.map((row: any) =>
+        this.result.columns.map((col: string) => this.formatCellValue(row[col])).join('\t')
+      ).join('\n');
+      contentToCopy = `${headers}\n${rows}`;
+    } else {
+      contentToCopy = this.formatResults();
+    }
+    
+    navigator.clipboard.writeText(contentToCopy).then(() => {
       alert('Results copied to clipboard!');
     }).catch(() => {
       alert('Failed to copy results');
